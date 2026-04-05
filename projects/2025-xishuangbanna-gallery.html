@@ -61,7 +61,8 @@
                 (data.thumbnails || []).forEach((filename, index) => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
-                    const src = `${PROJECT_BASE}/thumbnails/${filename}`;
+                    const isMobile = window.matchMedia('(hover: none)').matches;
+                    const src = isMobile ? `${PROJECT_BASE}/${filename}` : `${PROJECT_BASE}/thumbnails/${filename}`;
                     item.innerHTML = `
                         <a href="2025-xishuangbanna-photo.html?index=${index}" class="gallery-thumb-link">
                             <img src="${src}" alt="${title} ${index + 1}" loading="lazy">
