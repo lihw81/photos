@@ -65,6 +65,14 @@ if ('IntersectionObserver' in window) {
     });
 }
 
+// Disable gallery thumbnail navigation on touch/mobile devices
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('.gallery-thumb-link');
+    if (link && window.matchMedia('(hover: none)').matches) {
+        e.preventDefault();
+    }
+});
+
 // Add loading animation to project cards
 const projectCards = document.querySelectorAll('.project-card');
 projectCards.forEach((card, index) => {

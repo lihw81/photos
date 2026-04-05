@@ -1127,6 +1127,26 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .gallery-item.landscape,
+    .gallery-item.portrait {
+        aspect-ratio: unset !important;
+    }
+
+    .gallery-item.landscape .gallery-thumb-link,
+    .gallery-item.portrait .gallery-thumb-link {
+        height: auto;
+    }
+
+    .gallery-item img {
+        height: auto;
+        object-fit: unset;
+    }
+
+    .gallery-item.landscape .gallery-thumb-link img {
+        height: auto;
+        object-fit: unset;
+    }
+
     .meta-grid {
         grid-template-columns: 1fr 1fr;
     }
