@@ -399,7 +399,7 @@ body {
 
 /* About Page */
 .about-content {
-    padding: 5rem 0 6rem;
+    padding: 3rem 0 6rem;
 }
 
 .about-hero {
@@ -439,11 +439,12 @@ body {
     font-family: 'Cormorant Garamond', Georgia, serif;
 }
 
-.about-text p {
+.about-text p,
+.about-text ul li {
     color: var(--ink-light);
-    font-size: 0.75rem;
+    font-size: 1.0rem;
     margin-bottom: 1rem;
-    line-height: 1.85;
+    line-height: 1.5;
 }
 
 .section-divider {

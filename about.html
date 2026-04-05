@@ -23,29 +23,42 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        
 
         <!-- About Content -->
         <section class="project-detail">
             <div class="container">
                 <div class="about-content">
                     <div class="about-text">
-                        <h2>About Me</h2>
-                        <p>李宏伟，海归博士，大厂工程师，与太太和儿子居住在上海，关注其个人周围的环境和人，并以此为主要的创作内容。常用大画幅胶片和中画幅数码拍摄。</p>
+                        <h2>About Me(关于我）</h2>
+                        <p id="about-bio"></p>
                     </div>
                     <hr class="section-divider">
                     <div class="about-text">
-                        <h2>Exhibition and Awards</h2>
-                        <ul>
-                            <li>2025 — <em>The Heart of Modu</em>, Group Exhibition, Shanghai</li>
-                        </ul>
+                        <h2>Exhibition and Awards(展览与获奖）</h2>
+                        <ul id="awards-list"></ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        </main>
+    </main>
 
     <script src="js/main.js"></script>
+    <script>
+        fetch('/info.json')
+            .then(r => r.json())
+            .then(data => {
+                // Populate bio
+                document.getElementById('about-bio').textContent = data.about.bio;
+
+                // Populate exhibitions and awards
+                const list = document.getElementById('awards-list');
+                data.exhibitions_and_awards.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `${item.year} — <em>${item.title}</em>, ${item.type}, ${item.location}`;
+                    list.appendChild(li);
+                });
+            });
+    </script>
 </body>
 </html>

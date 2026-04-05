@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sprites of The City — Gallery - Hongwei Li</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+</head>
+<body class="with-sidebar">
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <a href="index.html">Hongwei Li</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link active">Projects</a></li>
+            <li><a href="../about.html" class="sidebar-link">About</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+    <section class="project-detail">
+        <div class="container">
+            <div class="back-to-projects">
+                <a href="2022-sprites.html" class="back-link">Back to Overview</a>
+            </div>
+            <div class="project-hero">
+                <h1 id="gallery-title"></h1>
+            </div>
+            <div class="project-gallery" id="gallery-grid"></div>
+        </div>
+    </section>
+    </main>
+
+    <script src="../js/main.js"></script>
+    <script>
+        const PROJECT_BASE = "../images/2022/the-sprites-of-the-city";
+
+        fetch(`${PROJECT_BASE}/project.json`)
+            .then(r => r.json())
+            .then(data => {
+                const title = data.title || "";
+                const subtitle = data.subtitle || "";
+                const year = data.year || "";
+                document.getElementById('gallery-title').innerHTML =
+                    title + (year ? ` (${year})` : '') +
+                    '<br><span style="font-size:0.6em;font-weight:300;">' + subtitle + '</span>';
+
+                const grid = document.getElementById('gallery-grid');
+                (data.thumbnails || []).forEach((filename, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    const src = `${PROJECT_BASE}/thumbnails/${filename}`;
+                    item.innerHTML = `
+                        <a href="2022-sprites-photo.html?index=${index}" class="gallery-thumb-link">
+                            <img src="${src}" alt="${title} ${index + 1}" loading="lazy">
+                        </a>`;
+                    grid.appendChild(item);
+
+                    const probe = new Image();
+                    probe.onload = () => {
+                        item.classList.add(probe.naturalWidth >= probe.naturalHeight ? 'landscape' : 'portrait');
+                    };
+                    probe.src = src;
+                });
+            });
+    </script>
+</body>
+</html>
