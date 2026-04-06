@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-resize.py — Resize images in a project folder.
+resize_mobile.py — Resize images to a target width for mobile delivery.
 
 Usage:
-    python resize.py <image_folder> [--max-edge N] [--output <output_folder>]
+    python resize_mobile.py <image_folder> [--width W] [--output <output_folder>]
 
 For each image (JPEG/PNG/WEBP) found directly in <image_folder>, the image is
-resized so its longest edge equals MAX_EDGE pixels while preserving the original
-aspect ratio. If --output is omitted or equals <image_folder>, the original file
-is overwritten in-place; otherwise the resized copy is written to <output_folder>.
+resized so its width equals WIDTH pixels while preserving the original aspect
+ratio. If --output is omitted or equals <image_folder>, the original file is
+overwritten in-place; otherwise the resized copy is written to <output_folder>.
 """
 
 import sys
@@ -16,28 +16,28 @@ import argparse
 from pathlib import Path
 from PIL import Image
 
-DEFAULT_MAX_EDGE = 3000
+DEFAULT_WIDTH = 1400
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp"}
 
 
-def resize_image(src: Path, dest: Path, max_edge: int) -> None:
-    """Resize *src* so its longest edge equals *max_edge* and save to *dest*."""
+def resize_image(src: Path, dest: Path, target_width: int) -> None:
+    """Resize *src* to *target_width* pixels wide and save to *dest*."""
     with Image.open(src) as img:
         w, h = img.size
-        if max(w, h) <= max_edge:
-            print(f"  {src.name}  {w}x{h}  →  skipped (already within limit)")
+        if w == target_width:
+            print(f"  {src.name}  {w}x{h}  →  skipped (already target width)")
             if dest != src:
                 import shutil
                 shutil.copy2(src, dest)
             return
-        scale = max_edge / max(w, h)
-        new_size = (round(w * scale), round(h * scale))
+        scale = target_width / w
+        new_size = (target_width, round(h * scale))
         resized = img.resize(new_size, Image.LANCZOS)
         resized.save(dest, quality=90, optimize=True)
     print(f"  {src.name}  {w}x{h}  →  {new_size[0]}x{new_size[1]}  →  {dest}")
 
 
-def process_folder(folder: Path, output: Path, max_edge: int) -> None:
+def process_folder(folder: Path, output: Path, target_width: int) -> None:
     if not folder.is_dir():
         print(f"Error: '{folder}' is not a valid directory.", file=sys.stderr)
         sys.exit(1)
@@ -55,24 +55,24 @@ def process_folder(folder: Path, output: Path, max_edge: int) -> None:
 
     overwrite = output.resolve() == folder.resolve()
     mode = "in-place" if overwrite else f"→ {output}"
-    print(f"Resizing {len(images)} image(s) in '{folder}' (longest edge → {max_edge}px, {mode})\n")
+    print(f"Resizing {len(images)} image(s) in '{folder}' (width → {target_width}px, {mode})\n")
 
     for src in images:
         dest = output / src.name
-        resize_image(src, dest, max_edge)
+        resize_image(src, dest, target_width)
 
     print(f"\nDone. {len(images)} image(s) processed.")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Resize images so their longest edge fits within a target size."
+        description="Resize images to a target width for mobile delivery."
     )
     parser.add_argument("image_folder", help="Folder containing source images")
     parser.add_argument(
-        "--max-edge", type=int, default=DEFAULT_MAX_EDGE,
-        metavar="N",
-        help=f"Target longest edge in pixels (default: {DEFAULT_MAX_EDGE})"
+        "--width", type=int, default=DEFAULT_WIDTH,
+        metavar="W",
+        help=f"Target width in pixels (default: {DEFAULT_WIDTH})"
     )
     parser.add_argument(
         "--output", default=None,
@@ -83,4 +83,4 @@ if __name__ == "__main__":
 
     folder = Path(args.image_folder)
     output = Path(args.output) if args.output else folder
-    process_folder(folder, output, args.max_edge)
+    process_folder(folder, output, args.width)
